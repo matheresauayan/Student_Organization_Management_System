@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../../firebase';
+
 
 @Component({
   selector: 'app-login',
@@ -10,15 +13,22 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.scss']
 })
 export class Login {
-  username = 'admin';
-  password = 'admin';
+  username = '';
+  password = '';
   rememberMe = false;
 
-  constructor(private router:Router){}
-  
+  constructor(private router: Router) {}
+
   login() {
-    if (this.username && this.password){
-      this.router.navigate(['/home'])
-    }
+    const email = `${this.username}@ustp.edu.ph`;
+
+    signInWithEmailAndPassword(auth, email, this.password)
+      .then(() => {
+        this.router.navigate(['/home/dashboard']);
+      })
+      .catch(err => {
+        alert('Login failed');
+        console.error(err);
+      });
   }
 }
